@@ -1,8 +1,5 @@
 package algorithms.mcts;
 
-import algorithms.mcts.Node;
-import game.Pion;
-
 public class MCTS {
 
 	private static final double C = Math.sqrt(2);
@@ -57,17 +54,17 @@ public class MCTS {
 			while (!temp.isTerminal()) {
 				temp.apply(temp.getRandomAction());
 			}
-			if(temp.getWinner() == null)
-				return 0;
-			scoreTot += temp.getWinner().equals(Pion.getOpponent(player)) ? 1 : -100;
+			if(temp.getWinner() != null)
+				scoreTot += temp.getWinner().equals(player) ? 1 : -1;
 		}
 		return scoreTot;
 	}
 
 	public void backUp(Node n, int delta) {
 		while(n != null) {
-			n.update(delta, player);
+			n.update(delta);
 			n = n.getParent();
+			delta = -delta;
 		}
 	}
 }

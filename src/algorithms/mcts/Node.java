@@ -20,24 +20,26 @@ public class Node {
 		this.children = new ArrayList<>();
 		this.board = board;
 		this.player = player;
-		this.score = parent == null ? 0 : parent.getScore();
+		this.score = 0;
 		this.visits = 0;
+	}
+
+	public String getPlayer() {
+		return player;
 	}
 
 	public Node addChild(int action) {
 		Board copy = board.copy();
-		copy.addPion(action, Pion.getOpponent(player));
+		copy.addPion(action, player);
 		Node child = new Node(this, copy, Pion.getOpponent(player));
 		child.setAction(action);
 		children.add(child);
 		return child;
 	}
 
-	public void update(int delta, String player) {
+	public void update(int delta) {
 		this.visits++;
 		this.score += delta;
-		if(this.player.equals(player))
-			this.score = -this.score;
 	}
 
 	public Node getParent() {
@@ -53,7 +55,7 @@ public class Node {
 	}
 
 	public boolean isTerminal() {
-		return board.checkWin() != null || board.getPossibleActions().size() == 0;
+		return board.getWinner() != null || board.getPossibleActions().size() == 0;
 	}
 
 	public boolean isFullyExpanded() {
@@ -80,7 +82,6 @@ public class Node {
 	public void apply(int action) {
 		board.addPion(action, player);
 		this.player = Pion.getOpponent(player);
-
 	}
 
 	public void setAction(int action) {
@@ -88,7 +89,7 @@ public class Node {
 	}
 
 	public String getWinner() {
-		return board.checkWin();
+		return board.getWinner();
 	}
 
 	public int getVisits() {

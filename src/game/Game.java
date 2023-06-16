@@ -20,13 +20,13 @@ public class Game {
 
 	public void start() {
 		System.out.println("Début de la partie");
-		while (board.checkWin() == null && board.getPossibleActions().size() > 0) {
+		while (board.getWinner() == null && board.getPossibleActions().size() > 0) {
 			System.out.println("A toi de jouer : " + currentPlayer);
 			board.afficher();
 			System.out.println("Quel position voulez-vous jouer ?");
 			int action = scanner.nextInt();
 			play(action);
-			if (board.checkWin() != null) {
+			if (board.getWinner() != null) {
 				board.afficher();
 				System.out.println("Bravo " + Pion.getOpponent(currentPlayer) + " tu as gagné !");
 				break;

@@ -10,9 +10,11 @@ public class Board {
 	private static final int BOARD_HEIGHT = 6;
 
 	private final Pion[][] board;
+	private String winner;
 
 	public Board() {
 		this.board = new Pion[BOARD_HEIGHT][BOARD_SIZE];
+		this.winner = null;
 	}
 
 	private boolean isEmpty(int i, int j) {
@@ -43,6 +45,7 @@ public class Board {
 		}
 		if(this.isEmpty(i, j)) {
 			this.board[i][j] = new Pion(player);
+			winner = checkWin(i,j);
 		}
 	}
 
@@ -62,81 +65,177 @@ public class Board {
 		System.out.println("---------------");
 	}
 
-	public String checkWin() {
-		boolean win;
-		for(String p : Pion.PLAYER_LIST) {
-			win = checkHorizontal(p);
-			if (win) return p;
-			win = checkVertical(p);
-			if (win) return p;
-			win = checkDiagonal(p);
-			if (win) return p;
+//	public String checkWin() {
+//		boolean win;
+//		for(String p : Pion.PLAYER_LIST) {
+//			win = checkHorizontal(p);
+//			if (win) return p;
+//			win = checkVertical(p);
+//			if (win) return p;
+//			win = checkDiagonal(p);
+//			if (win) return p;
+//		}
+//		return null;
+//	}
+//
+//	private boolean checkHorizontal(String player) {
+//		for(int i = BOARD_HEIGHT - 1; i >= 0; i--) {
+//			for(int j = 0; j < BOARD_SIZE - 3; j++) {
+//				if(board[i][j] == null || board[i][j+1] == null
+//						|| board[i][j+2] == null || board[i][j+3] == null)
+//					continue;
+//				if(board[i][j].color.equals(player) &&
+//						board[i][j+1].color.equals(player) &&
+//						board[i][j+2].color.equals(player) &&
+//						board[i][j+3].color.equals(player))
+//					return true;
+//			}
+//		}
+//		return false;
+//	}
+//
+//	private boolean checkVertical(String player) {
+//		for(int j = 0; j < BOARD_SIZE; j++) {
+//			for(int i = BOARD_HEIGHT - 1; i >= 3; i--) {
+//				if(board[i][j] == null || board[i-1][j] == null
+//						|| board[i-2][j] == null || board[i-3][j] == null) {
+//					continue;
+//				}
+//				if(board[i][j].color.equals(player) &&
+//						board[i-1][j].color.equals(player) &&
+//						board[i-2][j].color.equals(player) &&
+//						board[i-3][j].color.equals(player))
+//					return true;
+//			}
+//		}
+//		return false;
+//	}
+//
+//	private boolean checkDiagonal(String player) {
+//		// check for diagonal /
+//		for(int i = 3; i < BOARD_HEIGHT; i++) {
+//			for(int j = 0; j < BOARD_SIZE - 3; j++) {
+//				if(board[i][j] == null || board[i-1][j+1] == null
+//						|| board[i-2][j+2] == null || board[i-3][j+3] == null)
+//					continue;
+//				if(board[i][j].color.equals(player) &&
+//						board[i-1][j+1].color.equals(player) &&
+//						board[i-2][j+2].color.equals(player) &&
+//						board[i-3][j+3].color.equals(player))
+//					return true;
+//			}
+//		}
+//
+//		// check for diagonal \
+//		for(int i = 3; i < BOARD_HEIGHT; i++) {
+//			for(int j = 3; j < BOARD_SIZE; j++) {
+//				if(board[i][j] == null || board[i-1][j-1] == null
+//						|| board[i-2][j-2] == null || board[i-3][j-3] == null)
+//					continue;
+//				if(board[i][j].color.equals(player) &&
+//						board[i-1][j-1].color.equals(player) &&
+//						board[i-2][j-2].color.equals(player) &&
+//						board[i-3][j-3].color.equals(player))
+//					return true;
+//			}
+//		}
+//		return false;
+//	}
+
+	public String checkWin(int i, int j) {
+		String player = board[i][j].color;
+		String win = checkLine(player, i, j);
+		if(win != null) return win;
+		win = checkColumn(player, i, j);
+		if(win != null) return win;
+		win = checkDiag(player, i, j);
+		return win;
+	}
+
+	public String checkLine(String player, int i, int j) {
+		int count = 0;
+		int start = Math.max(0, j - 3);
+		int end = Math.min(BOARD_SIZE-1, j + 3);
+		for (int k = start; k <= end; k++) {
+			if (board[i][k] != null && board[i][k].color.equals(player)) {
+				count++;
+				if (count == 4) {
+					return player;
+				}
+			} else
+				count = 0;
 		}
 		return null;
 	}
 
-	private boolean checkHorizontal(String player) {
-		for(int i = BOARD_HEIGHT - 1; i >= 0; i--) {
-			for(int j = 0; j < BOARD_SIZE - 3; j++) {
-				if(board[i][j] == null || board[i][j+1] == null
-						|| board[i][j+2] == null || board[i][j+3] == null)
-					continue;
-				if(board[i][j].color.equals(player) &&
-						board[i][j+1].color.equals(player) &&
-						board[i][j+2].color.equals(player) &&
-						board[i][j+3].color.equals(player))
-					return true;
-			}
-		}
-		return false;
-	}
-
-	private boolean checkVertical(String player) {
-		for(int j = 0; j < BOARD_SIZE; j++) {
-			for(int i = BOARD_HEIGHT - 1; i >= 3; i--) {
-				if(board[i][j] == null || board[i-1][j] == null
-						|| board[i-2][j] == null || board[i-3][j] == null) {
-					continue;
+	public String checkColumn(String player, int i, int j) {
+		int count = 0;
+		int start = Math.max(0, i - 3);
+		int end = Math.min(BOARD_HEIGHT-1, i + 3);
+		for (int k = start; k <= end; k++) {
+			if (board[k][j] != null && board[k][j].color.equals(player)) {
+				count++;
+				if (count == 4) {
+					return player;
 				}
-				if(board[i][j].color.equals(player) &&
-						board[i-1][j].color.equals(player) &&
-						board[i-2][j].color.equals(player) &&
-						board[i-3][j].color.equals(player))
-					return true;
-			}
+			} else
+				count = 0;
 		}
-		return false;
+		return null;
 	}
 
-	private boolean checkDiagonal(String player) {
-		// check for diagonal /
-		for(int i = 3; i < BOARD_HEIGHT; i++) {
-			for(int j = 0; j < BOARD_SIZE - 3; j++) {
-				if(board[i][j] == null || board[i-1][j+1] == null
-						|| board[i-2][j+2] == null || board[i-3][j+3] == null)
-					continue;
-				if(board[i][j].color.equals(player) &&
-						board[i-1][j+1].color.equals(player) &&
-						board[i-2][j+2].color.equals(player) &&
-						board[i-3][j+3].color.equals(player))
-					return true;
-			}
+	public String checkDiag(String player, int i, int j) {
+		int countI = 0;
+		int countJ = 0;
+		int i_ = i;
+		int j_ = j;
+		while(i_ >= 0 && j_ >= 0) {
+			if (board[i_][j_] == null) break;
+			if (board[i_][j_].color.equals(player))
+				countI++;
+			else
+				countI = 0;
+			i_--;
+			j_--;
 		}
-
-		// check for diagonal \
-		for(int i = 3; i < BOARD_HEIGHT; i++) {
-			for(int j = 3; j < BOARD_SIZE; j++) {
-				if(board[i][j] == null || board[i-1][j-1] == null
-						|| board[i-2][j-2] == null || board[i-3][j-3] == null)
-					continue;
-				if(board[i][j].color.equals(player) &&
-						board[i-1][j-1].color.equals(player) &&
-						board[i-2][j-2].color.equals(player) &&
-						board[i-3][j-3].color.equals(player))
-					return true;
-			}
+		i_ = i+1;
+		j_ = j+1;
+		while(i_ < BOARD_HEIGHT && j_ < BOARD_SIZE) {
+			if (board[i_][j_] == null) break;
+			if (board[i_][j_].color.equals(player))
+				countJ++;
+			else
+				countJ = 0;
+			i_++;
+			j_++;
 		}
-		return false;
+		if(countI + countJ >= 4) return player;
+		i_ = i;
+		j_ = j;
+		countI = 0;
+		countJ = 0;
+		while(i_ < BOARD_HEIGHT && j_ >= 0) {
+			if (board[i_][j_] == null) break;
+			if (board[i_][j_].color.equals(player))
+				countI++;
+			else
+				countI = 0;
+			i_++;
+			j_--;
+		}
+		i_ = i-1;
+		j_ = j+1;
+		while(i_ >= 0 && j_ < BOARD_SIZE) {
+			if (board[i_][j_] == null) break;
+			if (board[i_][j_].color.equals(player))
+				countJ++;
+			else
+				countJ = 0;
+			i_--;
+			j_++;
+		}
+		if(countI + countJ >= 4) return player;
+		return null;
 	}
 
 	public int evaluate(String player) {
@@ -229,6 +328,10 @@ public class Board {
 				.count() == 3)
 			return 1;
 		return 0;
+	}
+
+	public String getWinner() {
+		return winner;
 	}
 
 	public Board copy() {

@@ -17,7 +17,7 @@ public class Node {
 		this.parent = parent;
 		this.board = board;
 		this.player = player;
-		this.isTerminal = board.checkWin() != null || board.getPossibleActions().size() == 0;
+		this.isTerminal = board.getWinner() != null || board.getPossibleActions().size() == 0;
 	}
 
 	private Map<Integer, Node> generateChildren() {
