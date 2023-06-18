@@ -4,10 +4,12 @@ import java.util.Map;
 
 public class MiniMax implements BaseAlgo {
 
-	private String player;
+	private final String player;
+	private int nbNodesTotal;
 
 	public MiniMax(String player) {
 		this.player = player;
+		this.nbNodesTotal = 0;
 	}
 
 	@Override
@@ -24,6 +26,7 @@ public class MiniMax implements BaseAlgo {
 		int u = -Integer.MAX_VALUE;
 		int a = -1;
 		Map<Integer, Node> children = n.getChildren();
+		nbNodesTotal += children.size();
 		for(Integer af : children.keySet()) {
 			int eval = min(children.get(af), maxDepth - 1)[0];
 			if(eval > u) {
@@ -45,6 +48,7 @@ public class MiniMax implements BaseAlgo {
 		int u = Integer.MAX_VALUE;
 		int a = -1;
 		Map<Integer, Node> children = n.getChildren();
+		nbNodesTotal += children.size();
 		for(Integer af : children.keySet()) {
 			int eval = max(children.get(af), maxDepth - 1)[0];
 			if(eval < u) {
@@ -55,5 +59,15 @@ public class MiniMax implements BaseAlgo {
 		return new int[] {
 				u, a
 		};
+	}
+
+	@Override
+	public int getNbNodesTotal() {
+		return nbNodesTotal;
+	}
+
+	@Override
+	public void setNbNodesTotal(int nbNodesTotal) {
+		this.nbNodesTotal = nbNodesTotal;
 	}
 }

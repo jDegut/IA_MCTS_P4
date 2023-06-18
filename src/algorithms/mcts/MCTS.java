@@ -5,9 +5,11 @@ public class MCTS {
 	private static final double C = Math.sqrt(2);
 
 	private final String player;
+	private int maxDepth;
 
 	public MCTS(String player) {
 		this.player = player;
+		this.maxDepth = 0;
 	}
 
 	public int uctSearch(Node root, int maxIter) {
@@ -61,9 +63,21 @@ public class MCTS {
 	}
 
 	public void backUp(Node n, int delta) {
+		int depth = 0;
 		while(n != null) {
 			n.update(delta);
 			n = n.getParent();
+			depth++;
 		}
+		if(depth > maxDepth)
+			maxDepth = depth;
+	}
+
+	public int getMaxDepth() {
+		return maxDepth;
+	}
+
+	public void resetMaxDepth() {
+		maxDepth = 0;
 	}
 }

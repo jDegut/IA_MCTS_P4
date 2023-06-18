@@ -4,10 +4,12 @@ import java.util.Map;
 
 public class AlphaBeta implements BaseAlgo {
 
-	private String player;
+	private final String player;
+	private int nbNodesTotal;
 
 	public AlphaBeta(String player) {
 		this.player = player;
+		this.nbNodesTotal = 0;
 	}
 
 	@Override
@@ -24,6 +26,7 @@ public class AlphaBeta implements BaseAlgo {
 		int u = -Integer.MAX_VALUE;
 		int a = -1;
 		Map<Integer, Node> children = n.getChildren();
+		nbNodesTotal += children.size();
 		for(Integer af : children.keySet()) {
 			int eval = min(children.get(af), maxDepth - 1, alpha, beta)[0];
 			if(eval > u) {
@@ -50,6 +53,7 @@ public class AlphaBeta implements BaseAlgo {
 		int u = Integer.MAX_VALUE;
 		int a = -1;
 		Map<Integer, Node> children = n.getChildren();
+		nbNodesTotal += children.size();
 		for(Integer af : children.keySet()) {
 			int eval = max(children.get(af), maxDepth - 1, alpha, beta)[0];
 			if(eval < u) {
@@ -65,5 +69,15 @@ public class AlphaBeta implements BaseAlgo {
 		return new int[] {
 				u, a
 		};
+	}
+
+	@Override
+	public int getNbNodesTotal() {
+		return nbNodesTotal;
+	}
+
+	@Override
+	public void setNbNodesTotal(int nbNodesTotal) {
+		this.nbNodesTotal = nbNodesTotal;
 	}
 }
