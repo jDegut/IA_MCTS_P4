@@ -12,8 +12,8 @@ import java.util.Random;
 public class Main {
 	public static void main(String[] args) {
 //		ratioRandomBase(new AlphaBeta("O"), 100, 5, "O");
-//		ratioRandomMCTS(100, 10000, "O");
-		ratioBaseMCTS(new AlphaBeta("X"), 1, 5, 100000,"O");
+		ratioRandomMCTS(100, 1000, "O");
+//		ratioBaseMCTS(new AlphaBeta("X"), 1, 5, 100000,"O");
 //		Game g = new Game("O");
 	}
 

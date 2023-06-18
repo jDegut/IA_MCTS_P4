@@ -64,7 +64,6 @@ public class MCTS {
 		while(n != null) {
 			n.update(delta);
 			n = n.getParent();
-			delta = -delta;
 		}
 	}
 }
